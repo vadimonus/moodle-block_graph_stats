@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -13,8 +14,7 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
- 
+
 /**
  * This file is used to make the graph using the Google API
  *
@@ -32,19 +32,19 @@ function graph_google($course_id,$title) {
 
     /**
      * number of day for the graph
-     * @var integer 
+     * @var integer
      */
     $daysnb = $CFG->daysnb;
 
     /**
      * width of the the graph
-     * @var integer 
+     * @var integer
      */
     $graphwidth = $CFG->graphwidth;
 
     /**
      * height of the the graph
-     * @var integer 
+     * @var integer
      */
     $graphheight = $CFG->graphheight;
 
@@ -56,53 +56,53 @@ function graph_google($course_id,$title) {
 
     /**
      * color of outer background
-     * @var string 
+     * @var string
      */
     $color_outer_background = $CFG->outer_background;
 
     /**
      * color of inner background
-     * @var string 
+     * @var string
      */
     $color_inner_background = $CFG->inner_background;
 
     /**
      * color of inner border
-     * @var string 
+     * @var string
      */
     $color_inner_border = $CFG->inner_border;
 
     /**
      * color of axis
-     * @var string 
+     * @var string
      */
     $color_axis_colour = $CFG->axis_colour;
 
     /**
      * color of first graph
-     * @var string 
+     * @var string
      */
     $color1 = $CFG->color1;
 
     /**
      * color of second graph
-     * @var string 
+     * @var string
      */
     $color2 = $CFG->color2;
 
     /**
      * style of the graph
-     * @var string 
+     * @var string
      */
     $style = $CFG->style;
-    
+
     // define type
     if ($style == 'area') {
         $type1 = 'area';
         $type2 = 'area';
     } else {
         $type1 = 'bars';
-        $type2 = 'line';       
+        $type2 = 'line';
     }
 
     $days = array();
@@ -112,45 +112,45 @@ function graph_google($course_id,$title) {
 
     // Let's get the datas
     $a=0;
-    if ($course_id>1) { 
-	    for ($i=$daysnb;$i>-1;$i--) { // Days count
+    if ($course_id>1) {
+            for ($i=$daysnb;$i>-1;$i--) { // Days count
             $params=array(
                 'time1' => mktime(0, 0, 0, date("m") , date("d") - $i, date("Y")),
                 'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i-1), date("Y")),
                 'courseid' => $course_id );
             $sql="SELECT COUNT(DISTINCT(userid)) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'view' AND course = :courseid ";
-		    $countgraph_multi = $DB->get_record_sql($sql, $params);
+                    $countgraph_multi = $DB->get_record_sql($sql, $params);
             $days[$a] = '';
-		    $logs_multi[$a] = $countgraph_multi->countid;
-		    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))),0,-7);
-		    $a = $a+1;
-	    }
+                    $logs_multi[$a] = $countgraph_multi->countid;
+                    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))),0,-7);
+                    $a = $a+1;
+            }
     } else {
-	    For ($i=$daysnb;$i>-1;$i--) { // Days count
+            For ($i=$daysnb;$i>-1;$i--) { // Days count
             $params=array(
                 'time1' => mktime(0, 0, 0, date("m") , date("d") - $i, date("Y")),
                 'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i-1), date("Y")),
                 'courseid' => $course_id );
             $sql= "SELECT COUNT(DISTINCT(userid)) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'login' ";
-		    $countgraph = $DB->get_record_sql($sql, $params);
+                    $countgraph = $DB->get_record_sql($sql, $params);
             $days[$a] = '';
-		    $logs[$a] = $countgraph->countid;
-		    if ($multi==1) {
+                    $logs[$a] = $countgraph->countid;
+                    if ($multi==1) {
                 $params=array(
                     'time1' => mktime(0, 0, 0, date("m") , date("d") - $i, date("Y")),
                     'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i-1), date("Y")),
                     'courseid' => $course_id );
                 $sql= "SELECT COUNT(userid) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'login' ";
-			    $countgraph_multi = $DB->get_record_sql($sql, $params);
-			    $logs_multi[$a] = $countgraph_multi->countid;
-		    }
-		    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))),0,-7);
-		    $a = $a+1;
-	    }
+                            $countgraph_multi = $DB->get_record_sql($sql, $params);
+                            $logs_multi[$a] = $countgraph_multi->countid;
+                    }
+                    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))),0,-7);
+                    $a = $a+1;
+            }
     }
-    
 
-    
+
+
     $graph = '
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
@@ -161,7 +161,7 @@ function graph_google($course_id,$title) {
         data.addColumn("string", "Day");
         data.addColumn("number", "'.get_string('visitors','block_graph_stats').'"); ';
         if ($course_id<=1) { $graph .= 'data.addColumn("number", "'.get_string('uniquevisitors','block_graph_stats').'");'; }
-        
+
         $graph .= '
         data.addRows([ ';
             $a = 0;
@@ -170,8 +170,8 @@ function graph_google($course_id,$title) {
                     $graph .= '["'.$day[$a].'",'.$logs_multi[$a].'],';
                 } else {
                     $graph .= '["'.$day[$a].'",'.$logs_multi[$a].','.$logs[$a].'],';
-                }    
-                $a++;            
+                }
+                $a++;
             }
         $graph .= '    ]);
         var options = {
@@ -187,8 +187,6 @@ function graph_google($course_id,$title) {
         }
         </script>
         <div id="chart_div"></div>';
-    
+
     return $graph;
 }
-
-?>

@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -13,9 +14,8 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
- 
- 
-/**
+
+/*
  * This file print users connected today
  *
  * @package    block
@@ -26,22 +26,22 @@
 require_once("../../config.php");
 global $CFG, $USER, $SESSION, $COURSE, $DB;
 
-/**
+/*
  * Today's date
- * @var timestamp 
+ * @var timestamp
  */
 $today = mktime(0, 0, 0, date("m") , date("d") , date("Y"));
-        
+
 $url = new moodle_url('/block/graph_stats/details.php');
 
-/**
+/*
  * course id to show in graph
- * @var integer 
+ * @var integer
  */
-$course_id = optional_param('course_id', 1, PARAM_INT);
-require_course_login($course_id);
+$courseid = optional_param('course_id', 1, PARAM_INT);
+require_course_login($courseid);
 
-$context = get_context_instance(CONTEXT_COURSE, $course_id);
+$context = context_course::instance($courseid);
 $PAGE->set_pagelayout('standard');
 $PAGE->set_url($url);
 $PAGE->set_context($context);
@@ -50,58 +50,60 @@ $PAGE->set_heading($COURSE->fullname);
 
 echo $OUTPUT->header();
 
-if (has_capability('coursereport/log:view', $context)) {
-    echo '<h2 class="main">'.get_string('connectedtoday','block_graph_stats').'</h2>';
-    echo '<a href="'.$CFG->wwwroot.'/course/report/log/index.php?chooselog=1&showusers=1&showcourses=1&host_course=1%2F'.$course_id.'&user=&date='.$today.'&modid=&modaction=&logformat=showashtml" alt="'.get_string('moredetails','block_graph_stats').'">'.get_string('moredetails', 'block_graph_stats').'</a>';
+if (has_capability('report/log:view', $context)) {
+    echo '<h2 class="main">'.get_string('connectedtoday', 'block_graph_stats').'</h2>';
+    echo '<a href="'.$CFG->wwwroot.
+    '/report/log/index.php?chooselog=1&showusers=1&showcourses=1&host_course=1%2F'
+    .$courseid.'&user=&date='.$today.'&modid=&modaction=&logformat=showashtml"
+    alt="'.get_string('moredetails', 'block_graph_stats').'">'
+    .get_string('moredetails', 'block_graph_stats').'</a>';
     if (!empty($SESSION->fullnamedisplay)) {
         $CFG->fullnamedisplay = $SESSION->fullnamedisplay;
     }
 
-	echo "<ul>";
-	$params=array(
-	    'time1' => mktime(0, 0, 0, date('m') , date('d'), date('Y')),
+        echo "<ul>";
+        $params = array(
+                'time1' => mktime(0, 0, 0, date('m') , date('d'), date('Y')),
         'time2' => mktime(23, 59, 59, date('m') , date('d'), date('Y')) );
     $query = "
-		SELECT DISTINCT
-			l.userid, u.firstname, u.lastname
-		FROM
-			{log} l, {user} u
-		WHERE
-			l.userid = u.id AND
-			time > :time1 AND
-			time < :time2 AND
-			action = 'login'
-	";
+                SELECT DISTINCT
+                        l.userid, u.firstname, u.lastname
+                FROM
+                        {log} l, {user} u
+                WHERE
+                        l.userid = u.id AND
+                        time > :time1 AND
+                        time < :time2 AND
+                        action = 'login'
+        ";
 
-	 if ($CFG->fullnamedisplay == 'lastname firstname') {
-		$query = $query."
-			ORDER BY 
-				u.lastname, u.firstname ASC 
-		";
-	 } else {
-		$query = $query."
-			 ORDER BY 
-				u.firstname, u.lastname  ASC 
-		";
-	 }	 
+    if ($CFG->fullnamedisplay == 'lastname firstname') {
+        $query = $query."
+                ORDER BY
+                u.lastname, u.firstname ASC
+                ";
+    } else {
+        $query = $query."
+                ORDER BY
+                u.firstname, u.lastname  ASC
+                ";
+    }
 
-	 if ($connections = $DB->get_records_sql($query, $params)) {
-     	 foreach ($connections as $connection) {
-			 if ($CFG->fullnamedisplay == 'firstname lastname') {
-				 $fullname = $connection->firstname.' '. $connection->lastname;
-			 } else if ($CFG->fullnamedisplay == 'lastname firstname') {
-				 $fullname = $connection->lastname.' '. $connection->firstname;
+    if ($connections = $DB->get_records_sql($query, $params)) {
+        foreach ($connections as $connection) {
+            if ($CFG->fullnamedisplay == 'firstname lastname') {
+                $fullname = $connection->firstname.' '. $connection->lastname;
+            } else if ($CFG->fullnamedisplay == 'lastname firstname') {
+                          $fullname = $connection->lastname.' '. $connection->firstname;
             } else if ($CFG->fullnamedisplay == 'firstname') {
-				 $fullname = $connection->firstname;
-             } else {
-				 $fullname = $connection->lastname.' '. $connection->firstname;
-             }
-			 echo '<li>'.$fullname.'</li>';
-		}
-
-	 }
-	echo "</ul>";
+                          $fullname = $connection->firstname;
+            } else {
+                $fullname = $connection->lastname.' '. $connection->firstname;
+            }
+                echo '<li>'.$fullname.'</li>';
+        }
+    }
+    echo "</ul>";
 }
 
 echo $OUTPUT->footer();
-

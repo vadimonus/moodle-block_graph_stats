@@ -1,8 +1,9 @@
-<?PHP 
-// Moodle 2.0
+<?php
+
+// Moodle 2.0.
 $string['pluginname'] = 'Statistics';
 
-// Added for V2
+// Added for V2.
 $string['style'] = 'Style';
 $string['style_help'] = 'Graph style';
 $string['moredetails'] = 'More details';
@@ -13,7 +14,7 @@ $string['engine_help'] = 'Renderer engine';
 $string['visitors'] = 'Visitors';
 $string['uniquevisitors'] = 'Unique visitors';
 
-// English langage	
+// English langage.
 $string['blockname'] = 'Statistics';
 $string['connectedtoday'] = 'Connections today&nbsp;: ';
 $string['coursesnb'] = 'Total courses&nbsp;: ';
@@ -21,7 +22,7 @@ $string['graphtitle'] = 'Connections during the last {$a} days';
 $string['membersnb'] = 'Total users&nbsp;: ';
 $string['seemsnotconfigured'] = 'This block seems not having any configuration. Inform your administrator.';
 
-// Settings
+// Settings.
 $string['axis_colour'] = 'Axis';
 $string['color1'] = 'Graph 1';
 $string['color2'] = 'Graph 2';
@@ -43,7 +44,7 @@ $string['inner_border'] = 'Border';
 $string['multi'] = 'Multiple connections';
 $string['outer_background'] = 'Background';
 
-// Colors
+// Colors.
 $string['aqua'] = 'Aqua';
 $string['black'] = 'Black';
 $string['blue'] = 'Blue';

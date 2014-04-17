@@ -1,4 +1,5 @@
 <?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -24,9 +25,9 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2013081300;
-$plugin->release = '2.0 (Build: 2011122100)';
+$plugin->version = 2014041600;
+$plugin->release = '2.1 (Build: 2014041600)';
 $plugin->cron = 0;
 $plugin->requires = 2010112400;
 $plugin->component = 'block_graph_stats';
-$plugin->maturity =  MATURITY_STABLE;
+$plugin->maturity = MATURITY_STABLE;
