@@ -92,17 +92,17 @@ class block_graph_stats extends block_base {
             $this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
         } else {
             // Graph from Moodle.
-            $this->content->text .= '<center><img src="'.
+            $this->content->text .= '<div><img src="'.
             $CFG->wwwroot.'/blocks/graph_stats/graph.php?course_id='.
             $COURSE->id.'" title="'.get_string('graphtitle', 'block_graph_stats', $daysnb).
-            '" /></center>';
+            '" /></div>';
         }
 
         // Add a link to course report for today.
         if (has_capability('report/log:view', context_course::instance($COURSE->id))) {
-            $this->content->text .= '<a href="'.$CFG->wwwroot.'/blocks/graph_stats/details.php?course_id='
+            $this->content->text .= '<div><a href="'.$CFG->wwwroot.'/blocks/graph_stats/details.php?course_id='
             .$COURSE->id.'" alt="'.get_string('moredetails', 'block_graph_stats').'" target="_blank">';
-            $this->content->text .= get_string('moredetails', 'block_graph_stats').'</a>';
+            $this->content->text .= get_string('moredetails', 'block_graph_stats').'</a></div>';
         }
 
         // Add some details in the footer.
