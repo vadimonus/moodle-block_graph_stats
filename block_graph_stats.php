@@ -75,37 +75,40 @@ class block_graph_stats extends block_base {
         $daysnb = $CFG->daysnb;
 
         $this->content = new stdClass;
-	$this->content->text = '';
-	$this->content->footer = '';
-        
-	switch ($CFG->engine) {
-		case 'google':
-		include_once('graph_google.php');
-            	$this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
-		break;
-		case 'moodle';
-		default:
-		$this->content->text .= html_writer::start_tag('div' , array('class' => 'graph'));		
-		$this->content->text .= html_writer::empty_tag('img', array(
-					'src' => new moodle_url('/blocks/graph_stats/graph.php?course_id=' . $COURSE->id),
-					'alt' => get_string('graphtitle', 'block_graph_stats', $daysnb),
-					array('title' => get_string('graphtitle', 'block_graph_stats', $daysnb))));
-		$this->content->text .= html_writer::end_tag('div');
-		break;
-		}
+        $this->content->text = '';
+        $this->content->footer = '';
+
+        switch ($CFG->engine) {
+            case 'google':
+                include_once('graph_google.php');
+                $this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
+                break;
+            case 'moodle';
+            default:
+                $this->content->text .= html_writer::start_tag('div' , array('class' => 'graph'));
+                $this->content->text .= html_writer::empty_tag('img', array(
+                    'src' => new moodle_url('/blocks/graph_stats/graph.php?course_id=' . $COURSE->id),
+                    'alt' => get_string('graphtitle', 'block_graph_stats', $daysnb),
+                    array('title' => get_string('graphtitle', 'block_graph_stats', $daysnb))));
+                $this->content->text .= html_writer::end_tag('div');
+                break;
+        }
 
         // Add a link to course report for today.
         if (has_capability('report/log:view', context_course::instance($COURSE->id))) {
-		$this->content->text .= html_writer::start_tag('div' , array('class' => 'moredetails'));
-		$this->content->text .= html_writer::link(new moodle_url('/blocks/graph_stats/details.php?course_id=' . $COURSE->id), get_string('moredetails', 'block_graph_stats') , array('title' => get_string('moredetails', 'block_graph_stats')));
-		$this->content->text .= html_writer::end_tag('div');
+            $this->content->text .= html_writer::start_tag('div' , array('class' => 'moredetails'));
+            $this->content->text .= html_writer::link(new moodle_url('/blocks/graph_stats/details.php?course_id=' .
+                $COURSE->id), get_string('moredetails', 'block_graph_stats') ,
+                array('title' => get_string('moredetails', 'block_graph_stats')));
+            $this->content->text .= html_writer::end_tag('div');
         }
 
         // Add some details in the footer.
         if ($COURSE->id > 1) {
             // In a course.
             $params = array('time' => mktime(0, 0, 0, date("m") , date("d"), date("Y")), 'course' => $COURSE->id);
-            $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {log} WHERE time > :time AND action = 'view' AND course = :course  ";
+            $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {log}
+                    WHERE time > :time AND action = 'view' AND course = :course  ";
             $connections = $DB->get_record_sql($sql , $params);
             $this->content->footer .= get_string('connectedtoday', 'block_graph_stats') . $connections->countid;
         } else {

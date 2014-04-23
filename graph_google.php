@@ -26,78 +26,14 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function graph_google($course_id,$title) {
-    global $CFG,$DB;
-    // Get parameters
+function graph_google($courseid, $title) {
+    global $CFG, $DB;
 
-    /**
-     * number of day for the graph
-     * @var integer
-     */
+    // Number of day for the graph.
     $daysnb = $CFG->daysnb;
 
-    /**
-     * width of the the graph
-     * @var integer
-     */
-    $graphwidth = $CFG->graphwidth;
-
-    /**
-     * height of the the graph
-     * @var integer
-     */
-    $graphheight = $CFG->graphheight;
-
-    /**
-     * does I have to print multiconnexion in the front page ?
-     * @var boolean
-     */
-    $multi = $CFG->multi;
-
-    /**
-     * color of outer background
-     * @var string
-     */
-    $color_outer_background = $CFG->outer_background;
-
-    /**
-     * color of inner background
-     * @var string
-     */
-    $color_inner_background = $CFG->inner_background;
-
-    /**
-     * color of inner border
-     * @var string
-     */
-    $color_inner_border = $CFG->inner_border;
-
-    /**
-     * color of axis
-     * @var string
-     */
-    $color_axis_colour = $CFG->axis_colour;
-
-    /**
-     * color of first graph
-     * @var string
-     */
-    $color1 = $CFG->color1;
-
-    /**
-     * color of second graph
-     * @var string
-     */
-    $color2 = $CFG->color2;
-
-    /**
-     * style of the graph
-     * @var string
-     */
-    $style = $CFG->style;
-
-    // define type
-    if ($style == 'area') {
+    // Define type.
+    if ($CFG->style == 'area') {
         $type1 = 'area';
         $type2 = 'area';
     } else {
@@ -108,48 +44,48 @@ function graph_google($course_id,$title) {
     $days = array();
     $day = array();
     $logs = array();
-    $logs_multi = array();
+    $logsmulti = array();
 
-    // Let's get the datas
-    $a=0;
-    if ($course_id>1) {
-            for ($i=$daysnb;$i>-1;$i--) { // Days count
-            $params=array(
+    // Let's get the datas.
+    $a = 0;
+    if ($courseid > 1) {
+        for ($i = $daysnb; $i > -1; $i--) { // Days count.
+            $params = array(
                 'time1' => mktime(0, 0, 0, date("m") , date("d") - $i, date("Y")),
-                'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i-1), date("Y")),
-                'courseid' => $course_id );
-            $sql="SELECT COUNT(DISTINCT(userid)) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'view' AND course = :courseid ";
-                    $countgraph_multi = $DB->get_record_sql($sql, $params);
+                'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i - 1), date("Y")),
+                'courseid' => $courseid);
+            $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {log}
+            WHERE time > :time1 AND time < :time2 AND action = 'view' AND course = :courseid";
+                    $countgraphmulti = $DB->get_record_sql($sql, $params);
             $days[$a] = '';
-                    $logs_multi[$a] = $countgraph_multi->countid;
-                    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))),0,-7);
-                    $a = $a+1;
-            }
+                    $logsmulti[$a] = $countgraphmulti->countid;
+                    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))), 0, -7);
+                    $a = $a + 1;
+        }
     } else {
-            For ($i=$daysnb;$i>-1;$i--) { // Days count
-            $params=array(
+        for ($i = $daysnb; $i > -1; $i--) { // Days count.
+            $params = array(
                 'time1' => mktime(0, 0, 0, date("m") , date("d") - $i, date("Y")),
-                'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i-1), date("Y")),
-                'courseid' => $course_id );
-            $sql= "SELECT COUNT(DISTINCT(userid)) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'login' ";
-                    $countgraph = $DB->get_record_sql($sql, $params);
+                'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i - 1), date("Y")),
+                'courseid' => $courseid);
+            $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {log}
+                    WHERE time > :time1 AND time < :time2 AND action = 'login'";
+            $countgraph = $DB->get_record_sql($sql, $params);
             $days[$a] = '';
-                    $logs[$a] = $countgraph->countid;
-                    if ($multi==1) {
-                $params=array(
+            $logs[$a] = $countgraph->countid;
+            if ($CFG->multi == 1) {
+                $params = array(
                     'time1' => mktime(0, 0, 0, date("m") , date("d") - $i, date("Y")),
-                    'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i-1), date("Y")),
-                    'courseid' => $course_id );
-                $sql= "SELECT COUNT(userid) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'login' ";
-                            $countgraph_multi = $DB->get_record_sql($sql, $params);
-                            $logs_multi[$a] = $countgraph_multi->countid;
-                    }
-                    $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))),0,-7);
-                    $a = $a+1;
+                    'time2' => mktime(0, 0, 0, date("m") , date("d") - ($i - 1), date("Y")),
+                    'courseid' => $courseid );
+                $sql = "SELECT COUNT(userid) as countid FROM {log} WHERE time > :time1 AND time < :time2 AND action = 'login' ";
+                            $countgraphmulti = $DB->get_record_sql($sql, $params);
+                            $logsmulti[$a] = $countgraphmulti->countid;
             }
+            $day[$a] = substr(userdate(mktime(0, 0, 0, date("m") , date("d") - $i, date("Y"))), 0, -7);
+            $a = $a + 1;
+        }
     }
-
-
 
     $graph = '
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
@@ -159,27 +95,29 @@ function graph_google($course_id,$title) {
         function drawChart() {
         var data = new google.visualization.DataTable();
         data.addColumn("string", "Day");
-        data.addColumn("number", "'.get_string('visitors','block_graph_stats').'"); ';
-        if ($course_id<=1) { $graph .= 'data.addColumn("number", "'.get_string('uniquevisitors','block_graph_stats').'");'; }
+        data.addColumn("number", "' . get_string('visitors', 'block_graph_stats') . '"); ';
+    if ($courseid <= 1) {
+        $graph .= 'data.addColumn("number", "'. get_string('uniquevisitors', 'block_graph_stats') . '");';
+    }
 
         $graph .= '
         data.addRows([ ';
             $a = 0;
-            for ($i=$daysnb;$i>-1;$i--) {
-                if ($course_id>1) {
-                    $graph .= '["'.$day[$a].'",'.$logs_multi[$a].'],';
-                } else {
-                    $graph .= '["'.$day[$a].'",'.$logs_multi[$a].','.$logs[$a].'],';
-                }
-                $a++;
-            }
-        $graph .= '    ]);
+    for ($i = $daysnb; $i > -1; $i--) {
+        if ($courseid > 1) {
+            $graph .= '["' . $day[$a] . '",' . $logsmulti[$a] . '],';
+        } else {
+            $graph .= '["' . $day[$a] . '",' . $logsmulti[$a] . ',' . $logs[$a] . '],';
+        }
+        $a++;
+    }
+    $graph .= '    ]);
         var options = {
-        width: '.$graphwidth.',
-        height: '.$graphwidth.',
+        width: '. $CFG->graphwidth .',
+        height: '. $CFG->graphheight .',
         legend: {position: "none"},
         hAxis: {textPosition: "none"},
-        series: {0:{color: "'.$color1.'", type: "'.$type1.'"},1:{color: "'.$color2.'", type: "'.$type2.'"}}
+        series: {0:{color: "'. $CFG->color1 .'", type: "'.$type1.'"},1:{color: "'. $CFG->color2 .'", type: "'.$type2.'"}}
         };
 
         var chart = new google.visualization.AreaChart(document.getElementById("chart_div"));

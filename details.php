@@ -51,19 +51,21 @@ $PAGE->set_heading($COURSE->fullname);
 echo $OUTPUT->header();
 
 if (has_capability('report/log:view', $context)) {
-    echo '<h2 class="main">'.get_string('connectedtoday', 'block_graph_stats').'</h2>';
-    echo '<a href="'.$CFG->wwwroot.
-    '/report/log/index.php?chooselog=1&showusers=1&showcourses=1&host_course=1%2F'
-    .$courseid.'&user=&date='.$today.'&modid=&modaction=&logformat=showashtml"
-    alt="'.get_string('moredetails', 'block_graph_stats').'">'
-    .get_string('moredetails', 'block_graph_stats').'</a>';
+     echo html_writer::start_tag('h2', array('class' => 'main'));
+     echo get_string('connectedtoday', 'block_graph_stats');
+     echo html_writer::end_tag('h2');
+     echo html_writer::link(new moodle_url('/report/log/index.php?chooselog=1&showusers=1&showcourses=1&host_course=1%2F'
+     . $courseid . '&user=&date=' . $today . '&modid=&modaction=&logformat=showashtml'),
+       get_string('moredetails', 'block_graph_stats') ,
+       array('title' => get_string('moredetails', 'block_graph_stats')));
+
     if (!empty($SESSION->fullnamedisplay)) {
         $CFG->fullnamedisplay = $SESSION->fullnamedisplay;
     }
 
-        echo "<ul>";
-        $params = array(
-                'time1' => mktime(0, 0, 0, date('m') , date('d'), date('Y')),
+    echo html_writer::start_tag('ul');
+    $params = array(
+        'time1' => mktime(0, 0, 0, date('m') , date('d'), date('Y')),
         'time2' => mktime(23, 59, 59, date('m') , date('d'), date('Y')) );
     $query = "
                 SELECT DISTINCT
@@ -100,10 +102,11 @@ if (has_capability('report/log:view', $context)) {
             } else {
                 $fullname = $connection->lastname.' '. $connection->firstname;
             }
-                echo '<li>'.$fullname.'</li>';
+                echo html_writer::start_tag('li');
+                echo $fullname;
+                echo html_writer::end_tag('li');
         }
     }
-    echo "</ul>";
+    echo html_writer::end_tag('ul');
 }
-
 echo $OUTPUT->footer();
