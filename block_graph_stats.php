@@ -74,35 +74,31 @@ class block_graph_stats extends block_base {
         $daysnb = 30;
         $daysnb = $CFG->daysnb;
 
-        /*
-         * engine used for make the graph
-         * @var string
-         */
-        $engine = 'moodle';
-        $engine = $CFG->engine;
-
         $this->content = new stdClass;
-        $this->content->text   = '';
-        $this->content->footer = '';
-
-        // Print the graph.
-        if ($engine == 'google') {
-            // Graph from Google API.
-            include_once('graph_google.php');
-            $this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
-        } else {
-            // Graph from Moodle.
-            $this->content->text .= '<div><img src="'.
-            $CFG->wwwroot.'/blocks/graph_stats/graph.php?course_id='.
-            $COURSE->id.'" title="'.get_string('graphtitle', 'block_graph_stats', $daysnb).
-            '" /></div>';
-        }
+	$this->content->text = '';
+	$this->content->footer = '';
+        
+	switch ($CFG->engine) {
+		case 'google':
+		include_once('graph_google.php');
+            	$this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
+		break;
+		case 'moodle';
+		default:
+		$this->content->text .= html_writer::start_tag('div' , array('class' => 'graph'));		
+		$this->content->text .= html_writer::empty_tag('img', array(
+					'src' => new moodle_url('/blocks/graph_stats/graph.php?course_id=' . $COURSE->id),
+					'alt' => get_string('graphtitle', 'block_graph_stats', $daysnb),
+					array('title' => get_string('graphtitle', 'block_graph_stats', $daysnb))));
+		$this->content->text .= html_writer::end_tag('div');
+		break;
+		}
 
         // Add a link to course report for today.
         if (has_capability('report/log:view', context_course::instance($COURSE->id))) {
-            $this->content->text .= '<div><a href="'.$CFG->wwwroot.'/blocks/graph_stats/details.php?course_id='
-            .$COURSE->id.'" alt="'.get_string('moredetails', 'block_graph_stats').'" target="_blank">';
-            $this->content->text .= get_string('moredetails', 'block_graph_stats').'</a></div>';
+		$this->content->text .= html_writer::start_tag('div' , array('class' => 'moredetails'));
+		$this->content->text .= html_writer::link(new moodle_url('/blocks/graph_stats/details.php?course_id=' . $COURSE->id), get_string('moredetails', 'block_graph_stats') , array('title' => get_string('moredetails', 'block_graph_stats')));
+		$this->content->text .= html_writer::end_tag('div');
         }
 
         // Add some details in the footer.
@@ -111,19 +107,18 @@ class block_graph_stats extends block_base {
             $params = array('time' => mktime(0, 0, 0, date("m") , date("d"), date("Y")), 'course' => $COURSE->id);
             $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {log} WHERE time > :time AND action = 'view' AND course = :course  ";
             $connections = $DB->get_record_sql($sql , $params);
-            $this->content->footer .= get_string('connectedtoday', 'block_graph_stats').$connections->countid;
+            $this->content->footer .= get_string('connectedtoday', 'block_graph_stats') . $connections->countid;
         } else {
                 // In the front page.
                 $params = array('time' => mktime(0, 0, 0, date("m") , date("d"), date("Y")));
                 $sql = "SELECT COUNT(userid) as countid FROM {log} WHERE time > :time AND action = 'login' ";
                 $connections = $DB->get_record_sql($sql, $params);
-                $this->content->footer .= get_string('connectedtoday', 'block_graph_stats').$connections->countid;
+                $this->content->footer .= get_string('connectedtoday', 'block_graph_stats') . $connections->countid;
                 $users = $DB->get_records('user', array('deleted' => 0, 'confirmed' => 1));
                 $courses = $DB->get_records('course', array('visible' => 1));
-                $this->content->footer .= '<br />'.get_string('membersnb', 'block_graph_stats').count($users);
-                $this->content->footer .= '<br />'.get_string('coursesnb', 'block_graph_stats').count($courses);
+                $this->content->footer .= '<br />'.get_string('membersnb', 'block_graph_stats') . count($users);
+                $this->content->footer .= '<br />'.get_string('coursesnb', 'block_graph_stats') . count($courses);
         }
-
         return $this->content;
     }
 }
