@@ -9,6 +9,10 @@ I will continue to maintain the plugin and add new features as requested.
 
 Changelog
 ==========
+20140423
+- Check and fixed with Moodle Code Checker
+- Changed HTML code to use html::writer API
+
 20140416
 - Added Simplified Chinese Language pack
 - Started running Moodle Code Checker on Block (WIP)
