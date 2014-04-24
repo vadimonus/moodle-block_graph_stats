@@ -9,6 +9,12 @@ I will continue to maintain the plugin and add new features as requested.
 
 Changelog
 ==========
+20140424
+- Removed Moodle graphing
+- Graph is now 100% width (Responsive)
+- Changed settings for colours to colour pickers
+- Optimized code + tidy up
+
 20140423
 - Check and fixed with Moodle Code Checker
 - Changed HTML code to use html::writer API

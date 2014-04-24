@@ -21,6 +21,7 @@
  * @package    block
  * @subpackage graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
+ * @copyright 2014 Wesley Ellis, Code Improvements.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -28,6 +29,7 @@
  * Main block class for graph_stats block
  *
  * @copyright 2011 Éric Bugnet with help of Jean Fruitet
+ * @copyright 2014 Wesley Ellis, Code Improvements.
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -41,7 +43,6 @@ class block_graph_stats extends block_base {
         $this->title = get_string('blockname', 'block_graph_stats');
     }
 
-    // Fix for Moodle 2.4 - Wez 15-01-2013.
     public function has_config() {
         return true;
     }
@@ -58,6 +59,12 @@ class block_graph_stats extends block_base {
         return array(
             'site' => true,
             'course-view' => true);
+    }
+
+    function get_required_javascript() {
+        parent::get_required_javascript();
+
+        $this->page->requires->jquery();
     }
 
     public function get_content() {
@@ -78,21 +85,8 @@ class block_graph_stats extends block_base {
         $this->content->text = '';
         $this->content->footer = '';
 
-        switch ($CFG->engine) {
-            case 'google':
-                include_once('graph_google.php');
-                $this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
-                break;
-            case 'moodle';
-            default:
-                $this->content->text .= html_writer::start_tag('div' , array('class' => 'graph'));
-                $this->content->text .= html_writer::empty_tag('img', array(
-                    'src' => new moodle_url('/blocks/graph_stats/graph.php?course_id=' . $COURSE->id),
-                    'alt' => get_string('graphtitle', 'block_graph_stats', $daysnb),
-                    array('title' => get_string('graphtitle', 'block_graph_stats', $daysnb))));
-                $this->content->text .= html_writer::end_tag('div');
-                break;
-        }
+        include_once('graph_google.php');
+        $this->content->text .= graph_google($COURSE->id, get_string('graphtitle', 'block_graph_stats', $daysnb));
 
         // Add a link to course report for today.
         if (has_capability('report/log:view', context_course::instance($COURSE->id))) {

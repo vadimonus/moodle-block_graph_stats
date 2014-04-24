@@ -21,12 +21,11 @@
  * @package    block
  * @subpackage graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
+ * @copyright  2014 Wesley Ellis, Code Improvements.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die;
-
-// Size and print settings.
 
 $settings->add(new admin_setting_configtext(
             'daysnb',
@@ -37,32 +36,11 @@ $settings->add(new admin_setting_configtext(
         ));
 
 $settings->add(new admin_setting_configtext(
-            'graphwidth',
-            get_string('graphwidth', 'block_graph_stats'),
-            get_string('graphwidth_help', 'block_graph_stats'),
-            '170',
-            PARAM_INT
-        ));
-
-$settings->add(new admin_setting_configtext(
             'graphheight',
             get_string('graphheight', 'block_graph_stats'),
             get_string('graphheight_help', 'block_graph_stats'),
-            '150',
+            '200',
             PARAM_INT
-        ));
-
-$engine = array(
-    'moodle' => 'Moodle',
-    'google' => 'Google'
-);
-
-$settings->add(new admin_setting_configselect(
-            'engine',
-            get_string('engine', 'block_graph_stats'),
-            get_string('engine_help', 'block_graph_stats'),
-            'moodle',
-            $engine
         ));
 
 $style = array(
@@ -74,10 +52,9 @@ $settings->add(new admin_setting_configselect(
             'style',
             get_string('style', 'block_graph_stats'),
             get_string('style_help', 'block_graph_stats'),
-            'classic',
+            'area',
             $style
         ));
-
 
 $settings->add(new admin_setting_configcheckbox(
             'multi',
@@ -86,72 +63,43 @@ $settings->add(new admin_setting_configcheckbox(
             '1'
         ));
 
+$name = 'outer_background';
+$title = get_string('outer_background', 'block_graph_stats');
+$description = get_string('outer_background_help', 'block_graph_stats');
+$default = '#ffffff';
+$previewconfig = null;
+$settings->add(new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig));
 
-// Color settings.
+$name = 'border_width';
+$title = get_string('border_width', 'block_graph_stats');
+$description = get_string('border_width_help', 'block_graph_stats');
+$default = '0';
+$settings->add(new admin_setting_configtext($name, $title, $description, $default));
 
-$colors = array(
-    'aqua' => get_string('aqua', 'block_graph_stats'),
-    'black' => get_string('black', 'block_graph_stats'),
-    'blue' => get_string('blue', 'block_graph_stats'),
-    'fuchsia' => get_string('fuchsia', 'block_graph_stats'),
-    'gray' => get_string('gray', 'block_graph_stats'),
-    'green' => get_string('green', 'block_graph_stats'),
-    'lime' => get_string('lime', 'block_graph_stats'),
-    'maroon' => get_string('maroon', 'block_graph_stats'),
-    'navy' => get_string('navy', 'block_graph_stats'),
-    'olive' => get_string('olive', 'block_graph_stats'),
-    'orange' => get_string('orange', 'block_graph_stats'),
-    'purple' => get_string('purple', 'block_graph_stats'),
-    'red' => get_string('red', 'block_graph_stats'),
-    'white' => get_string('white', 'block_graph_stats'),
-    'yellow' => get_string('yellow', 'block_graph_stats')
-    );
+$name = 'inner_border';
+$title = get_string('inner_border', 'block_graph_stats');
+$description = get_string('inner_border_help', 'block_graph_stats');
+$default = '#C0C0C0';
+$previewconfig = null;
+$settings->add(new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig));
 
+$name = 'axis_colour';
+$title = get_string('axis_colour', 'block_graph_stats');
+$description = get_string('axis_colour_help', 'block_graph_stats');
+$default = '#C0C0C0';
+$previewconfig = null;
+$settings->add(new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig));
 
-$settings->add(new admin_setting_configselect(
-            'outer_background',
-            get_string('outer_background', 'block_graph_stats'),
-            get_string('outer_background_help', 'block_graph_stats'),
-            'white',
-            $colors
-        ));
+$name = 'color1';
+$title = get_string('color1', 'block_graph_stats');
+$description = get_string('color1_help', 'block_graph_stats');
+$default = '#0000FF';
+$previewconfig = null;
+$settings->add(new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig));
 
-$settings->add(new admin_setting_configselect(
-            'inner_background',
-            get_string('inner_background', 'block_graph_stats'),
-            get_string('inner_background_help', 'block_graph_stats'),
-            'white',
-            $colors
-        ));
-
-$settings->add(new admin_setting_configselect(
-            'inner_border',
-            get_string('inner_border', 'block_graph_stats'),
-            get_string('inner_border_help', 'block_graph_stats'),
-            'gray',
-            $colors
-        ));
-
-$settings->add(new admin_setting_configselect(
-            'axis_colour',
-            get_string('axis_colour', 'block_graph_stats'),
-            get_string('axis_colour_help', 'block_graph_stats'),
-            'gray',
-            $colors
-        ));
-
-$settings->add(new admin_setting_configselect(
-            'color1',
-            get_string('color1', 'block_graph_stats'),
-            get_string('color1_help', 'block_graph_stats'),
-            'blue',
-            $colors
-        ));
-
-$settings->add(new admin_setting_configselect(
-            'color2',
-            get_string('color2', 'block_graph_stats'),
-            get_string('color2_help', 'block_graph_stats'),
-            'green',
-            $colors
-        ));
+$name = 'color2';
+$title = get_string('color2', 'block_graph_stats');
+$description = get_string('color2_help', 'block_graph_stats');
+$default = '#00FF00';
+$previewconfig = null;
+$settings->add(new admin_setting_configcolourpicker($name, $title, $description, $default, $previewconfig));

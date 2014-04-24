@@ -16,11 +16,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This file is used to make the graph using the Google API
+ * This file is used to setting the block allover the site
  *
  * @package    block
  * @subpackage graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
+ * @copyright  2014 Wesley Ellis, Code Improvements.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -113,18 +114,34 @@ function graph_google($courseid, $title) {
     }
     $graph .= '    ]);
         var options = {
-        width: '. $CFG->graphwidth .',
-        height: '. $CFG->graphheight .',
         legend: {position: "none"},
-        hAxis: {textPosition: "none"},
+        backgroundColor: {
+                           fill: "'. $CFG->outer_background . '",
+                           stroke: "'. $CFG->inner_border . '",
+                           strokeWidth: "'. $CFG->border_width . '"
+                         },
+        hAxis: {
+                textPosition: "none",
+               },
+        vAxis: {
+                gridlines: {
+                            color: "'. $CFG->axis_colour . '"
+                         }
+                },
         series: {0:{color: "'. $CFG->color1 .'", type: "'.$type1.'"},1:{color: "'. $CFG->color2 .'", type: "'.$type2.'"}}
         };
 
         var chart = new google.visualization.AreaChart(document.getElementById("chart_div"));
         chart.draw(data, options);
         }
+
+        $(document).ready(function () {
+        $(window).resize(function(){
+            drawChart();
+                });
+            });
         </script>
-        <div id="chart_div"></div>';
+        <div id="chart_div" style="width:100%; height:' . $CFG->graphheight .'"></div>';
 
     return $graph;
 }

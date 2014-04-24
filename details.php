@@ -15,14 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/*
- * This file print users connected today
+/**
+ * This file is used to setting the block allover the site
  *
  * @package    block
  * @subpackage graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
+ * @copyright  2014 Wesley Ellis, Code Improvements.
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 require_once("../../config.php");
 global $CFG, $USER, $SESSION, $COURSE, $DB;
 
