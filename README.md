@@ -3,7 +3,7 @@ Graph Statisics Block for Moodle 2.4+
 
 The graph stats block was originally developed by Éric Bugnet (https://github.com/ebugnet/graph_stats) and his repo works correctly on Moodle 2.0 - 2.4 with help from Jean Fruitet.
 
-In Moodle 2.5+ you start to see issues with the block and this is why I updated the code to work on Moodle 2.5, 2.6+
+In Moodle 2.5+ you start to see issues with the block and this is why I updated the code to work on Moodle 2.5, 2.6+ and also added some new features.
 
 I will continue to maintain the plugin and add new features as requested.
 
@@ -14,6 +14,7 @@ Changelog
 - Graph is now 100% width (Responsive)
 - Changed settings for colours to colour pickers
 - Optimized code + tidy up
+- Code corrected using Moodle Code Checker
 
 20140423
 - Check and fixed with Moodle Code Checker

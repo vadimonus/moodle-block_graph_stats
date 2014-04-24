@@ -61,7 +61,7 @@ class block_graph_stats extends block_base {
             'course-view' => true);
     }
 
-    function get_required_javascript() {
+    public function get_required_javascript() {
         parent::get_required_javascript();
 
         $this->page->requires->jquery();
