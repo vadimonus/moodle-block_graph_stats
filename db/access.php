@@ -24,13 +24,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/*
- * Main block class for graph_stats block
- *
- * @copyright 2011 Éric Bugnet with help of Jean Fruitet
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 $capabilities = array(
     'block/graph_stats:myaddinstance' => array(
         'captype' => 'write',

@@ -22,12 +22,13 @@
  * @subpackage graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
  * @copyright  2014 Wesley Ellis, Code Improvements.
+ * @copyright  2014 Vadim Dvorovenko
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2014042402;
-$plugin->release = '3.0 (Build: 2014041600)';
+$plugin->version = 2014072402;
+$plugin->release = '4.0 (Build: 2014072402)';
 $plugin->cron = 0;
-$plugin->requires = 2010112400;
+$plugin->requires = 2014051200;
 $plugin->component = 'block_graph_stats';
 $plugin->maturity = MATURITY_STABLE;
