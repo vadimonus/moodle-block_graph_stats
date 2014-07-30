@@ -5,7 +5,7 @@ The graph stats block was originally developed by Éric Bugnet (https://github.c
 
 In Moodle 2.5+ you start to see issues with the block and this is why Wesley Ellis updated the code to work on Moodle 2.5, 2.6+ and also added some new features.
 
-In Moodle 2.7+ block stopped working after changes in Moodle logging procedures. Vadimn Dvorovenko has changed code to use Standart log introdueced in Moodle 2.7
+In Moodle 2.7+ block stopped working after changes in Moodle logging procedures. Vadim Dvorovenko has changed code to use Standart log introdueced in Moodle 2.7
 
 Changelog
 ==========
