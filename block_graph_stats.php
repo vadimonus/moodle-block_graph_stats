@@ -107,10 +107,10 @@ class block_graph_stats extends block_base {
                     'eventname' => '\core\event\user_loggedin');
             $connections = $DB->get_record_sql($sql, $params);
             $this->content->footer .= get_string('connectedtodaya', 'block_graph_stats', $connections->countid);
-            $users = $DB->get_records('user', array('deleted' => 0, 'confirmed' => 1));
-            $courses = $DB->get_records('course', array('visible' => 1));
-            $this->content->footer .= '<br />'.get_string('membersnba', 'block_graph_stats', count($users));
-            $this->content->footer .= '<br />'.get_string('coursesnba', 'block_graph_stats', count($courses));
+            $users = $DB->count_records('user', array('deleted' => 0, 'confirmed' => 1));
+            $courses = $DB->count_records('course', array('visible' => 1));
+            $this->content->footer .= '<br />'.get_string('membersnba', 'block_graph_stats', $users);
+            $this->content->footer .= '<br />'.get_string('coursesnba', 'block_graph_stats', $courses);
         }
         return $this->content;
     }
