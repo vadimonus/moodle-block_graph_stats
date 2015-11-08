@@ -131,7 +131,7 @@ function block_graph_stats_graph_google($courseid) {
             var data = new google.visualization.DataTable();
             data.addColumn("string", "Day");';
     if ($courseid > 1) {
-        $graph .= 'data.addColumn("number", "'. get_string('uniquevisitors', 'block_graph_stats') . '");';
+        $graph .= 'data.addColumn("number", "'. get_string('visitors', 'block_graph_stats') . '");';
     } else {
         $graph .= 'data.addColumn("number", "'. get_string('visitors', 'block_graph_stats') . '");';
         $graph .= 'data.addColumn("number", "'. get_string('uniquevisitors', 'block_graph_stats') . '");';

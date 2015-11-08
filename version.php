@@ -26,8 +26,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$plugin->version = 2014072402;
-$plugin->release = '4.0 (Build: 2014072402)';
+$plugin->version = 2015110900;
+$plugin->release = '4.0 (Build: 2015110900)';
 $plugin->cron = 0;
 $plugin->requires = 2014051200;
 $plugin->component = 'block_graph_stats';
