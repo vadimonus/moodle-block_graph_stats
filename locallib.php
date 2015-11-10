@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -18,8 +17,7 @@
 /**
  * This file is used to setting the block allover the site
  *
- * @package    block
- * @subpackage graph_stats
+ * @package    block_graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
  * @copyright  2014 Wesley Ellis, Code Improvements.
  * @copyright  2014 Vadim Dvorovenko
@@ -28,11 +26,17 @@
 
 defined('MOODLE_INTERNAL') || die;
 
+/**
+ * Draws stat grapch using google visualization API
+ *
+ * @param int $courseid Course for wich stats is displaying. For main page $courseid=1
+ * @return string HTML for including into block
+ */
 function block_graph_stats_graph_google($courseid) {
     global $DB, $COURSE;
-    
+
     $cfg = get_config('block_graph_stats');
-    
+
     // Number of day for the graph.
     if (isset($cfg->daysnb)) {
         $daysnb = $cfg->daysnb;
@@ -54,22 +58,22 @@ function block_graph_stats_graph_google($courseid) {
     $visits2 = array();
 
     $cache = cache::make('block_graph_stats', 'visits');
- 
+
     // Let's get the datas.
     $a = 0;
     if ($courseid > 1) {
         for ($i = $daysnb; $i > -1; $i--) { // Days count.
-            $time1 = usergetmidnight(time() - $i * 60 * 60 *24);
-            $time2 = usergetmidnight(time() - ($i - 1) * 60 * 60 *24);
+            $time1 = usergetmidnight(time() - $i * 60 * 60 * 24);
+            $time2 = usergetmidnight(time() - ($i - 1) * 60 * 60 * 24);
             $visits1[$a] = $cache->get('visits1_' . $courseid . '_' . $time1);
             if ($visits1[$a] === false) {
-                $sql = "SELECT COUNT(DISTINCT(userid)) as countid 
+                $sql = "SELECT COUNT(DISTINCT(userid)) as countid
                         FROM {logstore_standard_log}
                         WHERE timecreated >= :time1 AND timecreated < :time2 AND eventname = :eventname  AND courseid = :course";
                 $params = array(
-                    'time1' => $time1, 
-                    'time2' => $time2, 
-                    'eventname' => '\core\event\course_viewed', 
+                    'time1' => $time1,
+                    'time2' => $time2,
+                    'eventname' => '\core\event\course_viewed',
                     'course' => $COURSE->id);
                 $visits1[$a] = $DB->get_field_sql($sql, $params);
                 if ($i > 0) {
@@ -81,19 +85,19 @@ function block_graph_stats_graph_google($courseid) {
         }
     } else {
         for ($i = $daysnb; $i > -1; $i--) { // Days count.
-            $time1 = usergetmidnight(time() - $i * 60 * 60 *24);
-            $time2 = usergetmidnight(time() - ($i - 1) * 60 * 60 *24);
+            $time1 = usergetmidnight(time() - $i * 60 * 60 * 24);
+            $time2 = usergetmidnight(time() - ($i - 1) * 60 * 60 * 24);
             $visits2[$a] = $cache->get('visits2_' . $courseid . '_' . $time1);
             if ($visits2[$a] === false) {
-                $sql = "SELECT COUNT(DISTINCT(userid)) as countid 
+                $sql = "SELECT COUNT(DISTINCT(userid)) as countid
                         FROM {logstore_standard_log}
                         WHERE timecreated >= :time1 AND timecreated < :time2 AND eventname = :eventname";
                 $params = array(
-                    'time1' => $time1, 
-                    'time2' => $time2, 
+                    'time1' => $time1,
+                    'time2' => $time2,
                     'eventname' => '\core\event\user_loggedin');
                 $visits2[$a] = $DB->get_field_sql($sql, $params);
-                if ($i > 0) { // do not cache today, because visits count can change
+                if ($i > 0) { // Do not cache today, because visits count can change.
                     $cache->set('visits2_' . $courseid . '_' . $time1, $visits2[$a]);
                 }
             }
@@ -101,22 +105,22 @@ function block_graph_stats_graph_google($courseid) {
             if ($cfg->multi == 1) {
                 $visits1[$a] = $cache->get('visits1_' . $courseid . '_' . $time1);
                 if ($visits1[$a] === false) {
-                    $sql = "SELECT COUNT(userid) as countid 
+                    $sql = "SELECT COUNT(userid) as countid
                             FROM {logstore_standard_log}
                             WHERE timecreated >= :time1 AND timecreated < :time2 AND eventname = :eventname";
                     $params = array(
-                        'time1' => $time1, 
-                        'time2' => $time2, 
+                        'time1' => $time1,
+                        'time2' => $time2,
                         'eventname' => '\core\event\user_loggedin');
                     $visits1[$a] = $DB->get_field_sql($sql, $params);
-                    if ($i > 0) { // do not cache today, because visits count can change
+                    if ($i > 0) { // Do not cache today, because visits count can change.
                         $cache->set('visits1_' . $courseid . '_' . $time1, $visits1[$a]);
                     }
                 }
             } else {
                 $visits1[$a] = '';
             }
-            
+
             $days[$a] = userdate($time1, get_string('strftimedaydate', 'core_langconfig'));
             $a = $a + 1;
         }
@@ -148,7 +152,7 @@ function block_graph_stats_graph_google($courseid) {
         $a++;
     }
     $graph .= ' ]);';
-    
+
     $graph .= '
         var options = {
             legend: {position: "none"},
@@ -167,11 +171,11 @@ function block_graph_stats_graph_google($courseid) {
             },
             series: {
                 0: {
-                    color: "' . $cfg->color1 . '", 
+                    color: "' . $cfg->color1 . '",
                     type: "'. $type1. '"
                 },
                 1: {
-                    color: "' . $cfg->color2 .'", 
+                    color: "' . $cfg->color2 .'",
                     type: "' . $type2 . '"
                 }
             }

@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,9 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/*
+/**
  * Main block class for graph_stats block
  *
+ * @package    block_graph_stats
  * @copyright 2011 Éric Bugnet with help of Jean Fruitet
  * @copyright 2014 Wesley Ellis, Code Improvements.
  * @copyright 2014 Vadim Dvorovenko
@@ -26,9 +26,18 @@
 
 require_once($CFG->dirroot . '/blocks/graph_stats/locallib.php');
 
+/**
+ * Main block class for graph_stats block
+ *
+ * @package    block_graph_stats
+ * @copyright 2011 Éric Bugnet with help of Jean Fruitet
+ * @copyright 2014 Wesley Ellis, Code Improvements.
+ * @copyright 2014 Vadim Dvorovenko
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class block_graph_stats extends block_base {
 
-    /*
+    /**
     * Standard block API function for initializing block instance
     * @return void
     */
@@ -36,30 +45,73 @@ class block_graph_stats extends block_base {
         $this->title = get_string('blockname', 'block_graph_stats');
     }
 
+    /**
+     * Subclasses should override this and return true if the
+     * subclass block has a settings.php file.
+     *
+     * @return boolean
+     */
     public function has_config() {
         return true;
     }
 
+    /**
+     * Is each block of this type going to have instance-specific configuration?
+     * Normally, this setting is controlled by {@link instance_allow_multiple()}: if multiple
+     * instances are allowed, then each will surely need its own configuration. However, in some
+     * cases it may be necessary to provide instance configuration to blocks that do not want to
+     * allow multiple instances. In that case, make this function return true.
+     * I stress again that this makes a difference ONLY if {@link instance_allow_multiple()} returns false.
+     * @return boolean
+     */
     public function instance_allow_config() {
         return true;
     }
 
+    /**
+     * Are you going to allow multiple instances of each block?
+     * If yes, then it is assumed that the block WILL USE per-instance configuration
+     * @return boolean
+     */
     public function instance_allow_multiple() {
         return false;
     }
 
+    /**
+     * Which page types this block may appear on.
+     *
+     * The information returned here is processed by the
+     * {@link blocks_name_allowed_in_format()} function. Look there if you need
+     * to know exactly how this works.
+     *
+     * Default case: everything except mod and tag.
+     *
+     * @return array page-type prefix => true/false.
+     */
     public function applicable_formats() {
         return array(
             'site' => true,
             'course-view' => true);
     }
 
+    /**
+     * Allows the block to load any JS it requires into the page.
+     *
+     * By default this function simply permits the user to dock the block if it is dockable.
+     */
     public function get_required_javascript() {
         parent::get_required_javascript();
 
         $this->page->requires->jquery();
     }
 
+    /**
+     * Parent class version of this function simply returns NULL
+     * This should be implemented by the derived class to return
+     * the content object.
+     *
+     * @return stdObject
+     */
     public function get_content() {
         global $COURSE, $DB;
 
@@ -81,8 +133,8 @@ class block_graph_stats extends block_base {
         if (has_capability('report/log:view', context_course::instance($COURSE->id))) {
             $this->content->text .= html_writer::start_tag('div' , array('class' => 'moredetails'));
             $this->content->text .= html_writer::link(
-                    new moodle_url('/blocks/graph_stats/details.php', array('course_id' => $COURSE->id)), 
-                    get_string('moredetails', 'block_graph_stats'), 
+                    new moodle_url('/blocks/graph_stats/details.php', array('course_id' => $COURSE->id)),
+                    get_string('moredetails', 'block_graph_stats'),
                     array('title' => get_string('moredetails', 'block_graph_stats')));
             $this->content->text .= html_writer::end_tag('div');
         }
@@ -93,8 +145,8 @@ class block_graph_stats extends block_base {
             $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {logstore_standard_log}
                     WHERE timecreated >= :time AND eventname = :eventname  AND courseid = :course";
             $params = array(
-                    'time' => usergetmidnight(time()), 
-                    'eventname' => '\core\event\course_viewed', 
+                    'time' => usergetmidnight(time()),
+                    'eventname' => '\core\event\course_viewed',
                     'course' => $COURSE->id);
             $connections = $DB->get_record_sql($sql , $params);
             $this->content->footer .= get_string('connectedtodaya', 'block_graph_stats', $connections->countid);
@@ -103,7 +155,7 @@ class block_graph_stats extends block_base {
             $sql = "SELECT COUNT(DISTINCT(userid)) as countid FROM {logstore_standard_log}
                     WHERE timecreated >= :time AND eventname = :eventname";
             $params = array(
-                    'time' => usergetmidnight(time()), 
+                    'time' => usergetmidnight(time()),
                     'eventname' => '\core\event\user_loggedin');
             $connections = $DB->get_record_sql($sql, $params);
             $this->content->footer .= get_string('connectedtodaya', 'block_graph_stats', $connections->countid);

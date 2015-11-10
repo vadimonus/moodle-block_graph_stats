@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -18,14 +17,12 @@
 /**
  * This file is used to setting the block allover the site
  *
- * @package    block
- * @subpackage graph_stats
+ * @package    block_graph_stats
  * @copyright  2011 Éric Bugnet with help of Jean Fruitet
  * @copyright  2014 Wesley Ellis, Code Improvements.
  * @copyright  2014 Vadim Dvorovenko
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 require_once("../../config.php");
 
 $today = usergetmidnight(time());
@@ -54,7 +51,8 @@ if (has_capability('report/log:view', $context)) {
         $id = 0;
     }
     echo html_writer::link(
-            new moodle_url('/report/log/index.php', array('chooselog' => 1, 'showusers' => 1, 'showcourses' => 1, 'id' => $id, 'date' => $today, 'edulevel' => -1, 'logreader' => 'logstore_standard')), 
+            new moodle_url('/report/log/index.php', array('chooselog' => 1, 'showusers' => 1, 'showcourses' => 1, 'id' => $id,
+                'date' => $today, 'edulevel' => -1, 'logreader' => 'logstore_standard')),
             get_string('moredetails', 'block_graph_stats'));
 
     list($sort, $sortparams) = users_order_by_sql('u');
@@ -72,7 +70,7 @@ if (has_capability('report/log:view', $context)) {
             ORDER BY
                 " . $sort;
         $params = array(
-            'time' => $today, 
+            'time' => $today,
             'eventname' => '\core\event\course_viewed',
             'course' => $COURSE->id);
     } else {
@@ -88,7 +86,7 @@ if (has_capability('report/log:view', $context)) {
             ORDER BY
                 " . $sort;
         $params = array(
-            'time' => $today, 
+            'time' => $today,
             'eventname' => '\core\event\user_loggedin');
     }
 
@@ -100,6 +98,5 @@ if (has_capability('report/log:view', $context)) {
         echo html_writer::end_tag('li');
     }
     echo html_writer::end_tag('ul');
-    
 }
 echo $OUTPUT->footer();
