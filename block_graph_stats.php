@@ -91,6 +91,7 @@ class block_graph_stats extends block_base {
     public function applicable_formats() {
         return array(
             'site' => true,
+            'my' => true,
             'course-view' => true);
     }
 
