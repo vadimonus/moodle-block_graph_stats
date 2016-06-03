@@ -120,10 +120,6 @@ class block_graph_stats extends block_base {
             return $this->content;
         }
 
-        /*
-         * number of day for the graph
-         * @var int
-         */
         $this->content = new stdClass;
         $this->content->text = '';
         $this->content->footer = '';
