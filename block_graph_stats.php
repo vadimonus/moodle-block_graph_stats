@@ -91,6 +91,7 @@ class block_graph_stats extends block_base {
     public function applicable_formats() {
         return array(
             'site' => true,
+            'my' => true,
             'course-view' => true);
     }
 
@@ -119,10 +120,6 @@ class block_graph_stats extends block_base {
             return $this->content;
         }
 
-        /*
-         * number of day for the graph
-         * @var int
-         */
         $this->content = new stdClass;
         $this->content->text = '';
         $this->content->footer = '';
